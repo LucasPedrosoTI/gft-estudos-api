@@ -70,6 +70,12 @@ public class PessoaResource {
         return pessoaService.atualizar(id, pessoa);
     }
 
+    @PutMapping("/{id}/ativo")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void atualizarAtivo(@PathVariable Long id, @RequestBody boolean ativo) {
+        pessoaService.atualizarAtivo(id, ativo);
+    }
+
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deletar(@PathVariable Long id) {
