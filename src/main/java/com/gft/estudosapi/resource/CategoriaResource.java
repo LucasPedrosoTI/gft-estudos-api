@@ -50,12 +50,10 @@ public class CategoriaResource {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Categoria> buscarPorId(@PathVariable Long id) {
-
-        return ResponseEntity.ok(categorias.findById(id).orElseThrow(() -> {
+    public Categoria buscarPorId(@PathVariable Long id) {
+        return categorias.findById(id).orElseThrow(() -> {
             throw new EmptyResultDataAccessException(1);
-        }));
-
+        });
     }
 
     @PutMapping("/{id}")
