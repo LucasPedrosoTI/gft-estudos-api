@@ -14,6 +14,8 @@ import com.gft.estudosapi.repository.filter.LancamentoFilter;
 import com.gft.estudosapi.service.exception.PessoaInexistenteOuInativaException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -25,7 +27,7 @@ public class LancamentoService {
   @Autowired
   Pessoas pessoas;
 
-  public List<Lancamento> pesquisarLancamentos(LancamentoFilter lancamentoFilter) {
+  public Page<Lancamento> pesquisarLancamentos(LancamentoFilter lancamentoFilter, Pageable pageable) {
     String descricao = Optional.ofNullable(lancamentoFilter.getDescricao()).orElse("");
 
     LocalDate dataVencimentoDe = Optional.ofNullable(lancamentoFilter.getDataVencimentoDe())
@@ -34,7 +36,7 @@ public class LancamentoService {
     LocalDate dataVencimentoAte = Optional.ofNullable(lancamentoFilter.getDataVencimentoAte())
         .orElse(LocalDate.of(3000, 12, 31));
 
-    return lancamentos.pesquisarLancamentos(descricao, dataVencimentoDe, dataVencimentoAte);
+    return lancamentos.pesquisarLancamentos(descricao, dataVencimentoDe, dataVencimentoAte, pageable);
   }
 
   public Lancamento salvar(@Valid Lancamento lancamento) {
