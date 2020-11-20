@@ -38,7 +38,7 @@ public class PessoaService {
         return pessoas.save(pessoaSalva);
     }
 
-    private Pessoa buscarPessoaPeloId(Long id) throws EmptyResultDataAccessException {
+    public Pessoa buscarPessoaPeloId(Long id) throws EmptyResultDataAccessException {
         return pessoas.findById(id).orElseThrow(() -> {
             throw new EmptyResultDataAccessException(1);
         });
