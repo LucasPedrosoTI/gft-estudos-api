@@ -3,7 +3,6 @@ package com.gft.estudosapi.exceptionHandler;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +10,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,9 +39,9 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 
 		String mensagemUsuario = this.messageSource.getMessage("mensagem.invalida", null, LocaleContextHolder.getLocale());
 
-		Optional<Throwable> cause = Optional.ofNullable(ex.getCause());
-
-		String mensagemDev = cause.isPresent() ? cause.toString() : ex.toString();
+		// Optional<Throwable> cause = Optional.ofNullable(ex.getCause());
+		// String mensagemDev = cause.isPresent() ? cause.toString() : ex.toString();
+		String mensagemDev = ExceptionUtils.getMessage(ex);
 
 		List<Erro> erros = Arrays.asList(new Erro(mensagemUsuario, mensagemDev));
 
@@ -80,6 +80,19 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 		List<Erro> erros = Arrays.asList(new Erro(mensagemUsuario, mensagemDev));
 
 		return this.handleExceptionInternal(ex, erros, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
+	}
+
+	@ExceptionHandler({ InvalidDataAccessApiUsageException.class })
+	public ResponseEntity<Object> handleInvalidDataAccessApiUsageException(InvalidDataAccessApiUsageException ex,
+			WebRequest request) {
+		String mensagemUsuario = this.messageSource.getMessage("recurso.operacao-nao-permitida", null,
+				LocaleContextHolder.getLocale());
+		String mensagemDev = ExceptionUtils.getRootCauseMessage(ex);
+
+		List<Erro> erros = Arrays.asList(new Erro(mensagemUsuario, mensagemDev));
+
+		return this.handleExceptionInternal(ex, erros, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
+
 	}
 
 	private List<Erro> criarListaDeErros(BindingResult bindingResult) {
