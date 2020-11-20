@@ -1,12 +1,9 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.gft.estudosapi.resource;
 
 import com.gft.estudosapi.event.RecursoCriadoEvent;
+import com.gft.estudosapi.model.Lancamento;
 import com.gft.estudosapi.model.Pessoa;
+import com.gft.estudosapi.repository.Lancamentos;
 import com.gft.estudosapi.repository.Pessoas;
 import com.gft.estudosapi.service.PessoaService;
 import java.util.List;
@@ -15,6 +12,8 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -39,6 +38,9 @@ public class PessoaResource {
     Pessoas pessoas;
 
     @Autowired
+    Lancamentos lancamentos;
+
+    @Autowired
     private ApplicationEventPublisher publisher;
 
     @Autowired
@@ -54,6 +56,11 @@ public class PessoaResource {
         return ResponseEntity.ok(pessoas.findById(id).orElseThrow(() -> {
             throw new EmptyResultDataAccessException(1);
         }));
+    }
+
+    @GetMapping("/{id}/lancamentos")
+    public Page<Lancamento> buscarLancamentos(@PathVariable Long id, Pageable pageable) {
+        return lancamentos.findByPessoaId(id, pageable);
     }
 
     @PostMapping

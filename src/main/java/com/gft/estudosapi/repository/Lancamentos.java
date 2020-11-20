@@ -1,7 +1,6 @@
 package com.gft.estudosapi.repository;
 
 import java.time.LocalDate;
-import java.util.List;
 
 import com.gft.estudosapi.model.Lancamento;
 
@@ -15,5 +14,7 @@ public interface Lancamentos extends JpaRepository<Lancamento, Long> {
   @Query("select l from Lancamento l where l.descricao like %?1% and l.dataVencimento >= ?2 and l.dataVencimento <= ?3")
   public Page<Lancamento> pesquisarLancamentos(String descricao, LocalDate dataVencimentoDe,
       LocalDate dataVencimentoAte, Pageable pageable);
+
+  public Page<Lancamento> findByPessoaId(Long id, Pageable pageable);
 
 }

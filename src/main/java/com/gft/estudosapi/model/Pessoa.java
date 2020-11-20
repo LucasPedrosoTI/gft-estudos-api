@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.gft.estudosapi.model;
 
 import javax.persistence.Embedded;
@@ -24,10 +19,10 @@ import lombok.NoArgsConstructor;
  *
  * @author lps10
  */
-@NoArgsConstructor
-@AllArgsConstructor
-@Data
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
 public class Pessoa {
 
     @Id
@@ -49,4 +44,5 @@ public class Pessoa {
     public boolean isInativo() {
         return !this.ativo;
     }
+
 }
