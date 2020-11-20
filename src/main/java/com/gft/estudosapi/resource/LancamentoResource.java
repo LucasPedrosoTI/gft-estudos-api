@@ -10,6 +10,7 @@ import com.gft.estudosapi.event.RecursoCriadoEvent;
 import com.gft.estudosapi.exceptionHandler.CustomExceptionHandler.Erro;
 import com.gft.estudosapi.model.Lancamento;
 import com.gft.estudosapi.repository.Lancamentos;
+import com.gft.estudosapi.repository.filter.LancamentoFilter;
 import com.gft.estudosapi.service.LancamentoService;
 import com.gft.estudosapi.service.exception.PessoaInexistenteOuInativaException;
 
@@ -45,8 +46,8 @@ public class LancamentoResource {
   MessageSource messageSource;
 
   @GetMapping
-  public List<Lancamento> listarLancamentos() {
-    return lancamentos.findAll();
+  public List<Lancamento> pesquisar(LancamentoFilter lancamentoFilter) {
+    return lancamentoService.pesquisarLancamentos(lancamentoFilter);
   }
 
   @GetMapping("/{id}")
