@@ -9,19 +9,22 @@ import com.gft.estudosapi.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/authenticate")
 public class AuthResource {
 
   @Autowired
   UsuarioService usuarioService;
 
-  @PostMapping
+    @PostMapping("/autenticar")
   public AuthenticationResponse autenticar(@RequestBody @Valid Usuario usuario) {
     return usuarioService.autenticar(usuario);
-  }
+    }
+
+    @PostMapping("/cadastrar")
+    public AuthenticationResponse cadastrar(@RequestBody @Valid Usuario usuario) {
+        return usuarioService.cadastrar(usuario);
+    }
 
 }

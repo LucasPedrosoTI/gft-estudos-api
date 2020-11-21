@@ -2,7 +2,6 @@ package com.gft.estudosapi.config;
 
 import com.gft.estudosapi.filters.JwtRequestFilter;
 import com.gft.estudosapi.service.UsuarioService;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -37,7 +36,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   protected void configure(HttpSecurity http) throws Exception {
     //@formatter:off
     http.csrf().disable()
-      .authorizeRequests().antMatchers("/authenticate").permitAll()
+            .authorizeRequests().antMatchers("/autenticar").permitAll()
+              .antMatchers("/cadastrar").permitAll()
               .anyRequest().authenticated()
               .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
