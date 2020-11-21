@@ -15,6 +15,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -92,7 +93,18 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 		List<Erro> erros = Arrays.asList(new Erro(mensagemUsuario, mensagemDev));
 
 		return this.handleExceptionInternal(ex, erros, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
+	}
 
+	@ExceptionHandler({ BadCredentialsException.class })
+	public ResponseEntity<Object> handleBadCredentialsException(BadCredentialsException ex, WebRequest request) {
+
+		String mensagemUsuario = this.messageSource.getMessage("recurso.acesso-negado", null,
+				LocaleContextHolder.getLocale());
+		String mensagemDev = ExceptionUtils.getRootCauseMessage(ex);
+
+		List<Erro> erros = Arrays.asList(new Erro(mensagemUsuario, mensagemDev));
+
+		return this.handleExceptionInternal(ex, erros, new HttpHeaders(), HttpStatus.FORBIDDEN, request);
 	}
 
 	private List<Erro> criarListaDeErros(BindingResult bindingResult) {
