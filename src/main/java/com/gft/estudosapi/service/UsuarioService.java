@@ -1,13 +1,11 @@
 package com.gft.estudosapi.service;
 
-import java.util.List;
-import java.util.Optional;
-
 import com.gft.estudosapi.model.AuthenticationResponse;
 import com.gft.estudosapi.model.Usuario;
 import com.gft.estudosapi.repository.Usuarios;
 import com.gft.estudosapi.utils.JwtUtil;
-
+import java.util.List;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

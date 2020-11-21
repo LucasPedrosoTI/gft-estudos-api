@@ -1,5 +1,6 @@
 package com.gft.estudosapi.config;
 
+import com.gft.estudosapi.filters.JwtRequestFilter;
 import com.gft.estudosapi.service.UsuarioService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +11,9 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @EnableWebSecurity
 @Configuration
@@ -20,7 +23,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   UsuarioService usuarioService;
 
   @Autowired
-  BCryptPasswordEncoder passwordEncoder;
+    BCryptPasswordEncoder passwordEncoder;
+
+    @Autowired
+    JwtRequestFilter jwtRequestFilter;
 
   @Override
   protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -32,7 +38,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     //@formatter:off
     http.csrf().disable()
       .authorizeRequests().antMatchers("/authenticate").permitAll()
-      .anyRequest().authenticated();
+              .anyRequest().authenticated()
+              .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+
+      http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
     //@formatter:on
   }
 

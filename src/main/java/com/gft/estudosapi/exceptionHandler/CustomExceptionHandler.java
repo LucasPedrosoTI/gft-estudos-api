@@ -3,7 +3,9 @@ package com.gft.estudosapi.exceptionHandler;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
+import javax.security.sasl.AuthenticationException;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -24,9 +26,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-
-import lombok.AllArgsConstructor;
-import lombok.Data;
 
 @ControllerAdvice
 public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
@@ -95,17 +94,28 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 		return this.handleExceptionInternal(ex, erros, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
 	}
 
-	@ExceptionHandler({ BadCredentialsException.class })
-	public ResponseEntity<Object> handleBadCredentialsException(BadCredentialsException ex, WebRequest request) {
+    @ExceptionHandler({BadCredentialsException.class})
+    public ResponseEntity<Object> handleBadCredentialsException(BadCredentialsException ex, WebRequest request) {
 
-		String mensagemUsuario = this.messageSource.getMessage("recurso.acesso-negado", null,
-				LocaleContextHolder.getLocale());
-		String mensagemDev = ExceptionUtils.getRootCauseMessage(ex);
+        String mensagemUsuario = this.messageSource.getMessage("recurso.acesso-negado", null,
+                LocaleContextHolder.getLocale());
+        String mensagemDev = ExceptionUtils.getRootCauseMessage(ex);
 
-		List<Erro> erros = Arrays.asList(new Erro(mensagemUsuario, mensagemDev));
+        List<Erro> erros = Arrays.asList(new Erro(mensagemUsuario, mensagemDev));
 
-		return this.handleExceptionInternal(ex, erros, new HttpHeaders(), HttpStatus.FORBIDDEN, request);
-	}
+        return this.handleExceptionInternal(ex, erros, new HttpHeaders(), HttpStatus.FORBIDDEN, request);
+    }
+
+    @ExceptionHandler({AuthenticationException.class})
+    public ResponseEntity<Object> handleAuthenticationException(AuthenticationException ex, WebRequest request) {
+
+        String mensagemUsuario = ex.getMessage();
+        String mensagemDev = ExceptionUtils.getRootCauseMessage(ex);
+
+        List<Erro> erros = Arrays.asList(new Erro(mensagemUsuario, mensagemDev));
+
+        return this.handleExceptionInternal(ex, erros, new HttpHeaders(), HttpStatus.FORBIDDEN, request);
+    }
 
 	private List<Erro> criarListaDeErros(BindingResult bindingResult) {
 		List<Erro> erros = new ArrayList<>();
