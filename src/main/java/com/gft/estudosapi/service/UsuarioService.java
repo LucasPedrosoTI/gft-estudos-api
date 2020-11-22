@@ -1,10 +1,9 @@
 package com.gft.estudosapi.service;
 
 import com.gft.estudosapi.exceptionHandler.CustomExceptionHandler;
-import com.gft.estudosapi.model.AuthenticationResponse;
 import com.gft.estudosapi.model.Usuario;
 import com.gft.estudosapi.repository.Usuarios;
-import com.gft.estudosapi.utils.JwtUtil;
+//import com.gft.estudosapi.utils.JwtUtil;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -12,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.User;
@@ -32,8 +30,8 @@ public class UsuarioService implements UserDetailsService {
     @Autowired
     AuthenticationManager authManager;
 
-    @Autowired
-    private JwtUtil jwtUtil;
+//    @Autowired
+//    private JwtUtil jwtUtil;
 
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
@@ -49,26 +47,26 @@ public class UsuarioService implements UserDetailsService {
         return new User(usuario.getEmail(), usuario.getSenha(), usuario.isAdmin() ? authorityListAdmin : authorityListUser);
     }
 
-    public AuthenticationResponse autenticar(Usuario usuario) {
-        authManager.authenticate(new UsernamePasswordAuthenticationToken(usuario.getEmail(), usuario.getSenha()));
+//    public AuthenticationResponse autenticar(Usuario usuario) {
+//        authManager.authenticate(new UsernamePasswordAuthenticationToken(usuario.getEmail(), usuario.getSenha()));
+//
+//        final UserDetails userDetails = loadUserByUsername(usuario.getEmail());
+//
+//        final String jwt = jwtUtil.generateToken(userDetails);
+//
+//        return new AuthenticationResponse(jwt);
+//    }
 
-        final UserDetails userDetails = loadUserByUsername(usuario.getEmail());
-
-        final String jwt = jwtUtil.generateToken(userDetails);
-
-        return new AuthenticationResponse(jwt);
-    }
-
-    public AuthenticationResponse cadastrar(Usuario usuario) {
-
-        if (usuarios.findByEmail(usuario.getEmail()) != null) {
-            throw new DuplicateKeyException("E-mail já existente");
-        }
-
-        usuarios.save(new Usuario(null, usuario.getEmail(), passwordEncoder.encode(usuario.getSenha()), usuario.isAdmin()));
-
-        return this.autenticar(usuario);
-    }
+//    public AuthenticationResponse cadastrar(Usuario usuario) {
+//
+//        if (usuarios.findByEmail(usuario.getEmail()) != null) {
+//            throw new DuplicateKeyException("E-mail já existente");
+//        }
+//
+//        usuarios.save(new Usuario(null, usuario.getEmail(), passwordEncoder.encode(usuario.getSenha()), usuario.isAdmin()));
+//
+//        return this.autenticar(usuario);
+//    }
 
     @ExceptionHandler({DuplicateKeyException.class})
     public ResponseEntity<Object> handleDuplicateKeyException(DuplicateKeyException ex) {
