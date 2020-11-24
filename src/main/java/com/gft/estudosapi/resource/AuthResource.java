@@ -1,12 +1,11 @@
 package com.gft.estudosapi.resource;
 
-import javax.validation.Valid;
-
 import com.gft.estudosapi.model.AuthenticationResponse;
 import com.gft.estudosapi.model.Usuario;
 import com.gft.estudosapi.service.UsuarioService;
-
+import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,17 +13,22 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class AuthResource {
 
-  @Autowired
-  UsuarioService usuarioService;
+    @Autowired
+    UsuarioService usuarioService;
 
     @PostMapping("/autenticar")
-  public AuthenticationResponse autenticar(@RequestBody @Valid Usuario usuario) {
-    return usuarioService.autenticar(usuario);
+    public AuthenticationResponse autenticar(@RequestBody @Valid Usuario usuario) {
+        return usuarioService.autenticar(usuario);
     }
 
     @PostMapping("/cadastrar")
     public AuthenticationResponse cadastrar(@RequestBody @Valid Usuario usuario) {
         return usuarioService.cadastrar(usuario);
+    }
+
+    @GetMapping("/")
+    public String swaggerUi() {
+        return "redirect:/swagger-ui.html";
     }
 
 }

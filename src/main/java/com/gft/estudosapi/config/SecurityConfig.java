@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -18,42 +19,60 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-  @Autowired
-  UsuarioService usuarioService;
+    @Autowired
+    UsuarioService usuarioService;
 
-  @Autowired
+    @Autowired
     BCryptPasswordEncoder passwordEncoder;
 
     @Autowired
     JwtRequestFilter jwtRequestFilter;
 
-  @Override
-  protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-    auth.userDetailsService(usuarioService).passwordEncoder(passwordEncoder);
-  }
+    private static final String[] AUTH_WHITELIST = {
+        "/v2/api-docs",
+        "/swagger-resources/configuration/ui",
+        "/swagger-resources",
+        "/swagger-resources/configuration/security",
+        "/swagger-ui.html",
+        "/webjars/**",
+        "/autenticar",
+        "/cadastrar",
+        "/"
+    };
 
-  @Override
-  protected void configure(HttpSecurity http) throws Exception {
-    //@formatter:off
-    http.csrf().disable()
-            .authorizeRequests().antMatchers("/autenticar").permitAll()
-              .antMatchers("/cadastrar").permitAll()
-              .anyRequest().authenticated()
-              .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(usuarioService).passwordEncoder(passwordEncoder);
+    }
 
-      http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
-    //@formatter:on
-  }
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        //@formatter:off
+        http.csrf().ignoringAntMatchers("/swagger**");
+        http.csrf().disable()
+                .cors().disable()
+                .authorizeRequests()
+                .antMatchers(AUTH_WHITELIST).permitAll()
+                .anyRequest().authenticated().and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
-  @Bean
-  public BCryptPasswordEncoder bCryptPasswordEncoder() {
-    return new BCryptPasswordEncoder();
-  }
+        http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+        //@formatter:on
+    }
 
-  @Override
-  @Bean
-  public AuthenticationManager authenticationManagerBean() throws Exception {
-    return super.authenticationManagerBean();
-  }
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+        web.ignoring().antMatchers(AUTH_WHITELIST);
+    }
+
+    @Bean
+    public BCryptPasswordEncoder bCryptPasswordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Override
+    @Bean
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
+    }
 
 }

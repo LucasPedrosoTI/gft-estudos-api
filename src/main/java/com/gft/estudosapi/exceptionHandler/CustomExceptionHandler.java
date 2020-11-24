@@ -106,16 +106,16 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         return this.handleExceptionInternal(ex, erros, new HttpHeaders(), HttpStatus.FORBIDDEN, request);
     }
 
-    @ExceptionHandler({AuthenticationException.class})
-    public ResponseEntity<Object> handleAuthenticationException(AuthenticationException ex, WebRequest request) {
+	@ExceptionHandler({ AuthenticationException.class })
+	public ResponseEntity<Object> handleAuthenticationException(AuthenticationException ex, WebRequest request) {
 
-        String mensagemUsuario = ex.getMessage();
-        String mensagemDev = ExceptionUtils.getRootCauseMessage(ex);
+		String mensagemUsuario = ex.getMessage();
+		String mensagemDev = ExceptionUtils.getRootCauseMessage(ex);
 
-        List<Erro> erros = Arrays.asList(new Erro(mensagemUsuario, mensagemDev));
+		List<Erro> erros = Arrays.asList(new Erro(mensagemUsuario, mensagemDev));
 
-        return this.handleExceptionInternal(ex, erros, new HttpHeaders(), HttpStatus.FORBIDDEN, request);
-    }
+		return this.handleExceptionInternal(ex, erros, new HttpHeaders(), HttpStatus.FORBIDDEN, request);
+	}
 
 	private List<Erro> criarListaDeErros(BindingResult bindingResult) {
 		List<Erro> erros = new ArrayList<>();

@@ -7,6 +7,7 @@ package com.gft.estudosapi.filters;
 
 import com.gft.estudosapi.service.UsuarioService;
 import com.gft.estudosapi.utils.JwtUtil;
+import io.jsonwebtoken.JwtException;
 import java.io.IOException;
 import java.util.Optional;
 import javax.servlet.FilterChain;
@@ -35,33 +36,38 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     JwtUtil jwtUtil;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException, JwtException {
+        try {
+            final Optional<String> authHeader = Optional.ofNullable(request.getHeader("Authorization"));
+            String jwt = null;
+            String username = null;
 
-        final Optional<String> authHeader = Optional.ofNullable(request.getHeader("Authorization"));
-        String jwt = null;
-        String username = null;
-
-        if (!authHeader.isEmpty() && authHeader.get().startsWith("Bearer ")) {
-            jwt = authHeader.get().substring(7);
-            username = jwtUtil.extractUsername(jwt);
-        }
-
-        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-
-            UserDetails userDetails = usuarioService.loadUserByUsername(username);
-
-            if (jwtUtil.validateToken(jwt, userDetails)) {
-                UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-
-                token.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
-                SecurityContextHolder.getContext().setAuthentication(token);
+            if (!authHeader.isEmpty() && authHeader.get().startsWith("Bearer ")) {
+                jwt = authHeader.get().substring(7);
+                username = jwtUtil.extractUsername(jwt);
             }
 
+            if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+
+                UserDetails userDetails = usuarioService.loadUserByUsername(username);
+
+                if (jwtUtil.validateToken(jwt, userDetails)) {
+                    UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(userDetails,
+                            null, userDetails.getAuthorities());
+
+                    token.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+
+                    SecurityContextHolder.getContext().setAuthentication(token);
+                }
+
+            }
+
+            filterChain.doFilter(request, response);
+        } catch (JwtException ex) {
+            response.setStatus(403);
+            response.addHeader("Erro", "Token invalido");
         }
 
-        filterChain.doFilter(request, response);
-
     }
-
 }
