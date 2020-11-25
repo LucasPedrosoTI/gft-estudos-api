@@ -24,14 +24,13 @@ public class ResourceServerConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     BCryptPasswordEncoder passwordEncoder;
 
-    public static final String[] AUTH_WHITELIST = {
-        "/swagger-ui.html/**", "/configuration/**", "/swagger-resources/**", "/v2/api-docs", "/webjars/**"
-    };
+    public static final String[] AUTH_WHITELIST = { "/swagger-ui.html/**", "/configuration/**", "/swagger-resources/**",
+            "/v2/api-docs", "/webjars/**", "/cadastrar" };
 
     @Override
     @Bean
     public AuthenticationManager authenticationManagerBean() throws Exception {
-        return super.authenticationManagerBean(); //To change body of generated methods, choose Tools | Templates.
+        return super.authenticationManagerBean(); // To change body of generated methods, choose Tools | Templates.
     }
 
     @Bean
@@ -44,7 +43,6 @@ public class ResourceServerConfig extends WebSecurityConfigurerAdapter {
         auth.userDetailsService(usuarioService).passwordEncoder(passwordEncoder);
     }
 
-
     @Override
     public void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests().antMatchers(AUTH_WHITELIST).permitAll().anyRequest().authenticated().and()
@@ -56,6 +54,5 @@ public class ResourceServerConfig extends WebSecurityConfigurerAdapter {
         web.ignoring().mvcMatchers(HttpMethod.OPTIONS, "/**");
         web.ignoring().antMatchers(AUTH_WHITELIST);
     }
-
 
 }
