@@ -6,6 +6,8 @@ import com.gft.estudosapi.model.Pessoa;
 import com.gft.estudosapi.repository.Lancamentos;
 import com.gft.estudosapi.repository.Pessoas;
 import com.gft.estudosapi.service.PessoaService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -30,6 +32,7 @@ import org.springframework.web.bind.annotation.RestController;
  *
  * @author lps10
  */
+@Api(tags = "Pessoas")
 @RestController
 @RequestMapping("/pessoas")
 public class PessoaResource {
@@ -46,11 +49,13 @@ public class PessoaResource {
     @Autowired
     PessoaService pessoaService;
 
+    @ApiImplicitParam(name = "Authorization", value = "Bearer Token", required = true, allowEmptyValue = false, paramType = "header", example = "Bearer access_token")
     @GetMapping
     public List<Pessoa> listarPessoas() {
         return pessoas.findAll();
     }
 
+    @ApiImplicitParam(name = "Authorization", value = "Bearer Token", required = true, allowEmptyValue = false, paramType = "header", example = "Bearer access_token")
     @GetMapping("/{id}")
     public ResponseEntity<Pessoa> buscarPorId(@PathVariable Long id) {
         return ResponseEntity.ok(pessoas.findById(id).orElseThrow(() -> {
@@ -58,11 +63,13 @@ public class PessoaResource {
         }));
     }
 
+    @ApiImplicitParam(name = "Authorization", value = "Bearer Token", required = true, allowEmptyValue = false, paramType = "header", example = "Bearer access_token")
     @GetMapping("/{id}/lancamentos")
     public Page<Lancamento> buscarLancamentos(@PathVariable Long id, Pageable pageable) {
         return lancamentos.findByPessoaId(id, pageable);
     }
 
+    @ApiImplicitParam(name = "Authorization", value = "Bearer Token", required = true, allowEmptyValue = false, paramType = "header", example = "Bearer access_token")
     @PostMapping
     public ResponseEntity<Pessoa> criar(@RequestBody @Valid Pessoa pessoa, HttpServletResponse response) {
         Pessoa pessoaSalva = pessoas.save(pessoa);
@@ -72,17 +79,20 @@ public class PessoaResource {
         return ResponseEntity.status(HttpStatus.CREATED).body(pessoaSalva);
     }
 
+    @ApiImplicitParam(name = "Authorization", value = "Bearer Token", required = true, allowEmptyValue = false, paramType = "header", example = "Bearer access_token")
     @PutMapping("/{id}")
     public Pessoa editar(@PathVariable Long id, @RequestBody @Valid Pessoa pessoa) {
         return pessoaService.atualizar(id, pessoa);
     }
 
+    @ApiImplicitParam(name = "Authorization", value = "Bearer Token", required = true, allowEmptyValue = false, paramType = "header", example = "Bearer access_token")
     @PutMapping("/{id}/ativo")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void atualizarAtivo(@PathVariable Long id, @RequestBody boolean ativo) {
         pessoaService.atualizarAtivo(id, ativo);
     }
 
+    @ApiImplicitParam(name = "Authorization", value = "Bearer Token", required = true, allowEmptyValue = false, paramType = "header", example = "Bearer access_token")
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deletar(@PathVariable Long id) {

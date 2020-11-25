@@ -29,7 +29,7 @@ values (
     'gft',
     'resource-server-rest-api',
     '$2a$10$0ifsK.NttZteddsFrb6DDeuMKvYzpG5IeAwfkRgOQpbtolabEE1C6',
-    'read',
+    'read, write',
     'password,authorization_code,refresh_token,client_credentials,implicit',
     'https://www.getpostman.com/oauth2/callback',
     'USER',
