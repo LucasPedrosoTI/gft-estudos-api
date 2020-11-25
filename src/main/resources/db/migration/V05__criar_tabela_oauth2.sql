@@ -32,7 +32,7 @@ values (
     'read, write',
     'password,authorization_code,refresh_token,client_credentials,implicit',
     'https://www.getpostman.com/oauth2/callback',
-    'USER',
+    'ADMIN',
     10800,
     2592000,
     null,
