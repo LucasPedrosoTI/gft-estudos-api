@@ -1,11 +1,5 @@
 package com.gft.estudosapi.resource;
 
-import java.util.Arrays;
-import java.util.List;
-
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
-
 import com.gft.estudosapi.event.RecursoCriadoEvent;
 import com.gft.estudosapi.exceptionHandler.CustomExceptionHandler.Erro;
 import com.gft.estudosapi.model.Lancamento;
@@ -13,7 +7,12 @@ import com.gft.estudosapi.repository.Lancamentos;
 import com.gft.estudosapi.repository.filter.LancamentoFilter;
 import com.gft.estudosapi.service.LancamentoService;
 import com.gft.estudosapi.service.exception.PessoaInexistenteOuInativaException;
-
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import java.util.Arrays;
+import java.util.List;
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.MessageSource;
@@ -33,6 +32,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+@Api(tags = "Lançamentos")
 @RestController
 @RequestMapping("/lancamentos")
 public class LancamentoResource {
@@ -49,11 +49,13 @@ public class LancamentoResource {
   @Autowired
   MessageSource messageSource;
 
+    @ApiImplicitParam(name = "Authorization", value = "Bearer Token", required = true, allowEmptyValue = false, paramType = "header", example = "Bearer access_token")
   @GetMapping
   public Page<Lancamento> pesquisar(LancamentoFilter lancamentoFilter, Pageable pageable) {
     return lancamentoService.pesquisarLancamentos(lancamentoFilter, pageable);
   }
 
+    @ApiImplicitParam(name = "Authorization", value = "Bearer Token", required = true, allowEmptyValue = false, paramType = "header", example = "Bearer access_token")
   @GetMapping("/{id}")
   public Lancamento buscarPorId(@PathVariable Long id) {
     return lancamentos.findById(id).orElseThrow(() -> {
@@ -61,6 +63,7 @@ public class LancamentoResource {
     });
   }
 
+    @ApiImplicitParam(name = "Authorization", value = "Bearer Token", required = true, allowEmptyValue = false, paramType = "header", example = "Bearer access_token")
   @PostMapping
   public ResponseEntity<Lancamento> criar(@RequestBody @Valid Lancamento lancamento, HttpServletResponse response) {
     Lancamento lancamentoSalvo = lancamentoService.salvar(lancamento);
@@ -70,6 +73,7 @@ public class LancamentoResource {
     return ResponseEntity.status(HttpStatus.CREATED).body(lancamentoSalvo);
   }
 
+    @ApiImplicitParam(name = "Authorization", value = "Bearer Token", required = true, allowEmptyValue = false, paramType = "header", example = "Bearer access_token")
   @DeleteMapping("/{id}")
   @ResponseStatus(HttpStatus.NO_CONTENT)
   public void deletar(@PathVariable Long id) {

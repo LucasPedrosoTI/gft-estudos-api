@@ -1,5 +1,6 @@
 package com.gft.estudosapi.model;
 
+import io.swagger.annotations.ApiModelProperty;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -18,11 +19,14 @@ import lombok.NoArgsConstructor;
 @Table(name = "categoria")
 public class Categoria {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+//  @ApiModelProperty(value = "ID da categoria", example = "1")
+    @ApiModelProperty(example = "1")
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-  @NotNull
-  @Size(min = 3, max = 30)
-  private String nome;
+    @ApiModelProperty(example = "Educação")
+    @NotNull
+    @Size(min = 3, max = 30)
+    private String nome;
 }
