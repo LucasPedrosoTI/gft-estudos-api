@@ -34,50 +34,50 @@ import io.swagger.annotations.ApiParam;
 @RequestMapping("/categorias")
 public class CategoriaResource {
 
-    @Autowired
-    private Categorias categorias;
+	@Autowired
+	private Categorias categorias;
 
-    @Autowired
-    private ApplicationEventPublisher publisher;
+	@Autowired
+	private ApplicationEventPublisher publisher;
 
-    @Autowired
-    CategoriaService categoriaService;
+	@Autowired
+	CategoriaService categoriaService;
 
-    @ApiOperation("Lista todas as categorias")
-    @GetMapping
-    public List<Categoria> listar() {
-        return categorias.findAll();
-    }
+	@ApiOperation("Lista todas as categorias")
+	@GetMapping
+	public List<Categoria> listar() {
+		return categorias.findAll();
+	}
 
-    @ApiOperation("Cria uma categoria")
-    @PostMapping
-    public ResponseEntity<Categoria> criar(@ApiParam("Representação de uma categoria") @RequestBody @Valid Categoria categoria, HttpServletResponse response) {
-        Categoria categoriaSalva = categorias.save(categoria);
+	@ApiOperation("Cria uma categoria")
+	@PostMapping
+	public ResponseEntity<Categoria> criar(@ApiParam("Representação de uma categoria") @RequestBody @Valid Categoria categoria, HttpServletResponse response) {
+		Categoria categoriaSalva = categorias.save(categoria);
 
-        publisher.publishEvent(new RecursoCriadoEvent(this, response, categoriaSalva.getId()));
+		publisher.publishEvent(new RecursoCriadoEvent(this, response, categoriaSalva.getId()));
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(categoriaSalva);
-    }
+		return ResponseEntity.status(HttpStatus.CREATED).body(categoriaSalva);
+	}
 
-    @ApiOperation("Busca uma categoria por ID")
-    @GetMapping("/{id}")
-    public Categoria buscarPorId(@ApiParam(value = "ID de uma categoria", example = "1") @PathVariable Long id) {
-        return categorias.findById(id).orElseThrow(() -> {
-            throw new EmptyResultDataAccessException(1);
-        });
-    }
+	@ApiOperation("Busca uma categoria por ID")
+	@GetMapping("/{id}")
+	public Categoria buscarPorId(@ApiParam(value = "ID de uma categoria", example = "1") @PathVariable Long id) {
+		return categorias.findById(id).orElseThrow(() -> {
+			throw new EmptyResultDataAccessException(1);
+		});
+	}
 
-    @ApiOperation("Edita uma categoria por ID")
-    @PutMapping("/{id}")
-    public Categoria editar(@PathVariable Long id, @RequestBody @Valid Categoria categoria) {
-        return categoriaService.atualizar(id, categoria);
-    }
+	@ApiOperation("Edita uma categoria por ID")
+	@PutMapping("/{id}")
+	public Categoria editar(@PathVariable Long id, @RequestBody @Valid Categoria categoria) {
+		return categoriaService.atualizar(id, categoria);
+	}
 
-    @ApiOperation("Exclui uma categoria por ID")
-    @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deletar(@PathVariable Long id) {
-        categorias.deleteById(id);
-    }
+	@ApiOperation("Exclui uma categoria por ID")
+	@DeleteMapping("/{id}")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void deletar(@PathVariable Long id) {
+		categorias.deleteById(id);
+	}
 
 }

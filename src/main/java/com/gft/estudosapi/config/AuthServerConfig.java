@@ -93,7 +93,7 @@ public class AuthServerConfig extends AuthorizationServerConfigurerAdapter {
 	@Override
 	public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
 		endpoints.authenticationManager(authenticationManager).tokenStore(tokenStore())
-		.accessTokenConverter(tokenEnhancer()).userDetailsService(usuarioService);
+				.accessTokenConverter(tokenEnhancer()).userDetailsService(usuarioService).reuseRefreshTokens(false);
 	}
 
 	@Override
